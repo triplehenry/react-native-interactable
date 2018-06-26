@@ -35,9 +35,9 @@
 @property (nonatomic, assign) CGPoint initialPosition;
 @property (nonatomic, copy) RCTDirectEventBlock onAnimatedEvent;
 @property (nonatomic, assign) BOOL reportOnAnimatedEvents;
-@property (nonatomic, assign) NSInteger edgeSwipeX;
-
+@property (nonatomic, assign) NSInteger edgeSwipeDistance;
 - (instancetype)initWithBridge:(RCTBridge*)bridge;
+
 - (void)setVelocity:(NSDictionary*)params;
 - (void)snapTo:(NSDictionary*)params;
 - (void)changePosition:(NSDictionary*)params;

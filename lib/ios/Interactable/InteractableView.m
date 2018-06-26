@@ -328,7 +328,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 - (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)pan
 {
     CGPoint location = [pan locationInView:self];
-    if (fabs(location.x) > self.edgeSwipeX && fabs(location.x) < (self.edgeSwipeX + 30)) {
+    if (fabs(location.x) > self.edgeSwipeDistance && fabs(location.x) < (self.edgeSwipeDistance + 30)) {
         return NO;
     }
     CGPoint translation = [pan translationInView:self];
@@ -608,7 +608,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 - (void)setEdgeSwipeX:(NSDictionary*)params
 {
-    self.edgeSwipeX = [[params objectForKey:@"x"] integerValue];
+    self.edgeSwipeDistance = [[params objectForKey:@"x"] integerValue];
 }
 
 @end
