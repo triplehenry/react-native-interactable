@@ -327,6 +327,10 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 - (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)pan
 {
+    CGPoint location = [pan locationInView:self];
+    if (fabs(location.x) > self.edgeSwipeX || fabs(location.x) < (self.edgeSwipeX + 30)) {
+        return NO;
+    }
     CGPoint translation = [pan translationInView:self];
     if (self.horizontalOnly) return fabs(translation.x) > fabs(translation.y);
     if (self.verticalOnly) return fabs(translation.y) > fabs(translation.x);
@@ -457,7 +461,7 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
     PhysicsSpringBehavior *snapBehavior = [[PhysicsSpringBehavior alloc] initWithTarget:self anchorPoint:[snapPoint positionWithOrigin:self.origin]];
     snapBehavior.tension = snapPoint.tension;
     [self.animator addTempBehavior:snapBehavior];
-    
+
     CGFloat damping = 0.7;
     if (snapPoint.damping > 0.0) damping = snapPoint.damping;
     PhysicsFrictionBehavior *frictionBehavior = [[PhysicsFrictionBehavior alloc] initWithTarget:self];
@@ -602,6 +606,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 }
 
+- (void)setEdgeSwipeX:(NSInteger)x
+{
+    self.edgeSwipeX = x;
+}
+
 @end
-
-

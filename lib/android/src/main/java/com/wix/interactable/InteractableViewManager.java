@@ -22,6 +22,7 @@ public class InteractableViewManager extends ViewGroupManager<InteractableView> 
     public static final int COMMAND_SNAP_TO = 2;
     public static final int COMMAND_CHANGE_POSITION = 3;
     public static final int COMMAND_BRING_TO_FRONT = 4;
+    public static final int COMMAND_SET_EDGE_SWIPE_X = 5;
 
 
     @Override
@@ -40,7 +41,8 @@ public class InteractableViewManager extends ViewGroupManager<InteractableView> 
                 "setVelocity", COMMAND_SET_VELOCITY,
                 "snapTo", COMMAND_SNAP_TO,
                 "changePosition", COMMAND_CHANGE_POSITION,
-                "bringToFront", COMMAND_BRING_TO_FRONT
+                "bringToFront", COMMAND_BRING_TO_FRONT,
+                "setEdgeSwipeX", COMMAND_SET_EDGE_SWIPE_X
                 );
     }
 
@@ -67,6 +69,10 @@ public class InteractableViewManager extends ViewGroupManager<InteractableView> 
             }
             case COMMAND_BRING_TO_FRONT: {
                 view.bringToFront();
+                return;
+            }
+            case COMMAND_SET_EDGE_SWIPE_X: {
+                // Edge swipe is iOS only.
                 return;
             }
             default:
