@@ -107,7 +107,7 @@ RCT_EXPORT_METHOD(changePosition:(nonnull NSNumber *)reactTag
 }
 
 RCT_EXPORT_METHOD(setEdgeSwipeX:(nonnull NSNumber *)reactTag
-                  x:(NSNumber *)x)
+                  x:(nonnull NSNumber *)x)
 {
     [self.bridge.uiManager addUIBlock:
      ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry)
