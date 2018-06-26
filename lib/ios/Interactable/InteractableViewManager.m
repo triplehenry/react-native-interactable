@@ -65,7 +65,7 @@ RCT_EXPORT_METHOD(setVelocity:(nonnull NSNumber *)reactTag
 RCT_EXPORT_METHOD(bringToFront:(nonnull NSNumber *)reactTag
                   params:(NSDictionary*)params)
 {
-    
+
 }
 
 RCT_EXPORT_METHOD(snapTo:(nonnull NSNumber *)reactTag
@@ -107,7 +107,7 @@ RCT_EXPORT_METHOD(changePosition:(nonnull NSNumber *)reactTag
 }
 
 RCT_EXPORT_METHOD(setEdgeSwipeX:(nonnull NSNumber *)reactTag
-                  x:(NSInteger)x)
+                  x:(NSNumber *)x)
 {
     [self.bridge.uiManager addUIBlock:
      ^(__unused RCTUIManager *uiManager, NSDictionary<NSNumber *, UIView *> *viewRegistry)
@@ -115,7 +115,7 @@ RCT_EXPORT_METHOD(setEdgeSwipeX:(nonnull NSNumber *)reactTag
          UIView *view = viewRegistry[reactTag];
          if ([view isKindOfClass:[InteractableView class]])
          {
-             [(InteractableView*)view setEdgeSwipeX:x];
+             [(InteractableView*)view setEdgeSwipeX:[x integerValue]];
          }
          else
          {
