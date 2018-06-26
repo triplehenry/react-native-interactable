@@ -606,9 +606,9 @@ RCT_NOT_IMPLEMENTED(- (instancetype)init)
 
 }
 
-- (void)setEdgeSwipeX:(NSInteger)x
+- (void)setEdgeSwipeX:(NSDictionary*)params
 {
-    self.edgeSwipeX = x;
+    self.edgeSwipeX = [[params objectForKey:@"x"] integerValue];
 }
 
 @end

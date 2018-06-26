@@ -42,6 +42,6 @@
 - (void)snapTo:(NSDictionary*)params;
 - (void)changePosition:(NSDictionary*)params;
 - (void)bringToFront:(NSDictionary*)params;
-- (void)setEdgeSwipeX:(NSInteger)x;
+- (void)setEdgeSwipeX:(NSDictionary*)params;
 
 @end
