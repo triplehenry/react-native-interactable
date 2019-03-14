@@ -237,39 +237,8 @@ public class InteractableView extends ViewGroup implements PhysicsAnimator.Physi
         return true;
     }
 
-    private void delegateEventToBlocker(MotionEvent event) {
-        if (!isDelegatingTouch){
-            event.setAction(MotionEvent.ACTION_DOWN);
-            this.animator.setDragging(false);
-            isSwiping = false;
-            isDelegatingTouch = true;
-        }
-
-         touchBlocker.dispatchTouchEvent(event);
-    }
-
     private void handleTouch(MotionEvent event) {
         Log.d("InteractableView","handleTouch action = " + event.getAction());
-        float delX = event.getX() - dragStartLocation.x;
-        float delY = event.getY() - dragStartLocation.y;
-
-         Log.d("InteractableView","handleTouch action = " + event.getAction() +
-                " curY = " + getTranslationY() +
-                " delY = " + delY + " isDelegatingTouch = " + isDelegatingTouch);
-
-         if (isAtTopBound() && touchBlocker != null
-                && (delY < 0 || !touchBlocker.isAtTop() )) {
-            Log.d("InteractableView","has blocker! y " + touchBlocker.getTop());
-
-             delegateEventToBlocker(event);
-
-             return true;
-        }
-        if (isDelegatingTouch) {
-            isDelegatingTouch = false;
-            startDrag(event);
-            this.dragStartLocation = new PointF(event.getX(),event.getY());
-        }
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
