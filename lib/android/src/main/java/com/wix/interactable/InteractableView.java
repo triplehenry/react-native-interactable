@@ -232,8 +232,9 @@ public class InteractableView extends ViewGroup implements PhysicsAnimator.Physi
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        handleTouch(event);
         getParent().requestDisallowInterceptTouchEvent(true);
-        return handleTouch(event);
+        return true;
     }
 
     private void delegateEventToBlocker(MotionEvent event) {
