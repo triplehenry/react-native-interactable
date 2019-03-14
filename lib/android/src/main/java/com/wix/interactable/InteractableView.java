@@ -59,7 +59,9 @@ public class InteractableView extends ViewGroup implements PhysicsAnimator.Physi
 
     private InteractionListener listener;
 
-    private int mTouchSlop;
+    private int touchSlop;
+    private TouchBlocker touchBlocker;
+    private boolean isDelegatingTouch = false;
     private boolean isChildIsScrollContainer = false;
     private boolean skippedOneInterception;
 
@@ -90,7 +92,7 @@ public class InteractableView extends ViewGroup implements PhysicsAnimator.Physi
         dragEnabled = true;
         initializeAnimator();
         ViewConfiguration vc = ViewConfiguration.get(getContext());
-        mTouchSlop = vc.getScaledTouchSlop();
+        touchSlop = vc.getScaledTouchSlop();
     }
 
     public void setEventListener(InteractionListener listener) {
@@ -194,10 +196,11 @@ public class InteractableView extends ViewGroup implements PhysicsAnimator.Physi
 
             float delX = ev.getX() - dragStartLocation.x;
             float delY = ev.getY() - dragStartLocation.y;
-            boolean isHSwipe = Math.abs(delX) > mTouchSlop;
-            boolean isVSwipe = Math.abs(delY) > mTouchSlop;
+            boolean isHSwipe = Math.abs(delX) > touchSlop;
+            boolean isVSwipe = Math.abs(delY) > touchSlop;
 
             this.isSwiping = this.isSwiping || isHSwipe || isVSwipe;
+            this.isDelegatingTouch = false;
 
            if (!isChildIsScrollContainer && dragEnabled && (horizontalOnly && isHSwipe ||
                     verticalOnly && isVSwipe ||
@@ -218,7 +221,7 @@ public class InteractableView extends ViewGroup implements PhysicsAnimator.Physi
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
+        touchBlocker = (TouchBlocker) findViewWithTag(TouchBlocker.TAG);
     }
 
 
@@ -229,13 +232,44 @@ public class InteractableView extends ViewGroup implements PhysicsAnimator.Physi
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        handleTouch(event);
         getParent().requestDisallowInterceptTouchEvent(true);
-        return true;
+        return handleTouch(event);
+    }
+
+    private void delegateEventToBlocker(MotionEvent event) {
+        if (!isDelegatingTouch){
+            event.setAction(MotionEvent.ACTION_DOWN);
+            this.animator.setDragging(false);
+            isSwiping = false;
+            isDelegatingTouch = true;
+        }
+
+         touchBlocker.dispatchTouchEvent(event);
     }
 
     private void handleTouch(MotionEvent event) {
         Log.d("InteractableView","handleTouch action = " + event.getAction());
+        float delX = event.getX() - dragStartLocation.x;
+        float delY = event.getY() - dragStartLocation.y;
+
+         Log.d("InteractableView","handleTouch action = " + event.getAction() +
+                " curY = " + getTranslationY() +
+                " delY = " + delY + " isDelegatingTouch = " + isDelegatingTouch);
+
+         if (isAtTopBound() && touchBlocker != null
+                && (delY < 0 || !touchBlocker.isAtTop() )) {
+            Log.d("InteractableView","has blocker! y " + touchBlocker.getTop());
+
+             delegateEventToBlocker(event);
+
+             return true;
+        }
+        if (isDelegatingTouch) {
+            isDelegatingTouch = false;
+            startDrag(event);
+            this.dragStartLocation = new PointF(event.getX(),event.getY());
+        }
+
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 // for case when there are non-touchable children views
@@ -263,6 +297,7 @@ public class InteractableView extends ViewGroup implements PhysicsAnimator.Physi
 
         }
         this.dragLastLocation = new PointF(event.getX(),event.getY());
+        return true;
     }
 
     private ReactRootView getReactRoot() {
@@ -276,6 +311,13 @@ public class InteractableView extends ViewGroup implements PhysicsAnimator.Physi
         }
         Log.d("InteractableView","no root");
         return null;
+    }
+
+    private boolean isAtTopBound() {
+        if (this.boundaries == null) {
+            return false;
+        }
+        return getTranslationY() <= this.boundaries.getTop();
     }
 
     private void startDrag(MotionEvent ev) {
@@ -455,7 +497,7 @@ public class InteractableView extends ViewGroup implements PhysicsAnimator.Physi
 
     public void setDragEnabled(boolean dragEnabled) {
         this.dragEnabled = dragEnabled;
-        
+
         if (this.dragBehavior != null && !dragEnabled) {
             handleEndOfDrag();
         }
