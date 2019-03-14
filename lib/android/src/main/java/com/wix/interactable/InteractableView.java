@@ -267,7 +267,6 @@ public class InteractableView extends ViewGroup implements PhysicsAnimator.Physi
 
         }
         this.dragLastLocation = new PointF(event.getX(),event.getY());
-        return true;
     }
 
     private ReactRootView getReactRoot() {
